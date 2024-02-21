@@ -1,18 +1,12 @@
 {
-  "name": "avocetsmartcontract",
+  "name": "smart-contract",
   "version": "1.0.0",
-  "description": "Avocet ReFi",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "alAmeer98",
-  "license": "ISC",
+  "repository": "https://github.com/ameer017/smart-contract-avocet.git",
+  "author": "ameer017 <rajiabdullahi907@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "hardhat": "^2.19.2"
-  },
-  "dependencies": {
-    "@openzeppelin/contracts": "^5.0.1"
+    "hardhat": "^2.20.1"
   }
 }
