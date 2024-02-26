@@ -44,7 +44,7 @@ contract Avocoin is ERC20Interface {
         symbol = "AVOCOIN";
         name = "AVOCOIN";
         decimals = 18;
-        _totalSupply = 1_000_900_000_000_000_000_000_000;
+        _totalSupply = 1_000_000_000_000_000_000_000_000_000;
         balances[0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266] = _totalSupply;
         emit Transfer(
             address(0),
