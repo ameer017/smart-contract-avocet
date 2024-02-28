@@ -3,9 +3,10 @@ pragma solidity 0.8.24;
 
 contract Plastic {
     struct Order {
-        uint256 orderID;
         address owner;
+        uint256 orderID;
         uint256 price;
+        uint256 weight;
         string orderTitle;
         string location;
         string images;
@@ -21,19 +22,22 @@ contract Plastic {
     event OrderListed(
         uint256 indexed id,
         address indexed owner,
-        uint256 price
+        uint256 price,
+        uint256 weight
     );
     event OrderSold(
         uint256 indexed id,
         address indexed oldOwner,
         address indexed newOwner,
-        uint256 price
+        uint256 price,
+        uint256 weight
     );
     event OrderResold(
         uint256 indexed id,
         address indexed oldOwner,
         address indexed newOwner,
-        uint256 price
+        uint256 price,
+        uint256 weight
     );
 
     modifier onlyOwner() {
@@ -45,50 +49,71 @@ contract Plastic {
     };
 
 
-    function listOrder(address owner, uint256 price, string memory _orderTitle,
-     string memory _images, string memory _orderAddress, string memory _location
-     ) external returns (uint256, string memory, string memory, string memory, string memory ) {
+    function listOrder(
+        address owner, 
+        uint256 price, 
+        uint256 _weight, 
+        string memory _orderTitle,
+        string memory _images, 
+        string memory _orderAddress, 
+        string memory _location
+     ) external returns (
+        uint256, 
+        string memory, 
+        string memory, 
+        string memory, 
+        string memory 
+        ) 
+        {
+        
         require(price > 0, "Price must be greater than 0.");
-         orderIndex++;
-         uint256 orderID = orderIndex;
-         Order storage order = orders[orderID];
+        
+        require(_weight > 0, "Weight must be greater than 0.");
+         
+        orderIndex++;
+         
+        uint256 orderID = orderIndex;
+        Order storage order = orders[orderID];
 
-            order.orderID = orderId;
-         order.owner = owner;
-         order.price = price;
-         order.orderTitle = _orderTitle;
-         order.images = _images;
-         order.orderAddress = _orderAddress;
-         order.location = _location
+        order.orderID = orderId;
+        order.owner = owner;
+        order.price = price;
+        order.orderTitle = _orderTitle;
+        order.images = _images;
+        order.orderAddress = _orderAddress;
+        order.location = _location
+        order.weight = _weight
         
         emit OrderListed(orderID, owner, price);
 
-        return ( orderId, _orderTitle, _images, _location);
+        return ( orderId, _orderTitle, _images, _location, _weight);
     }
 
     function updatePrice(address owner, uint256 orderId, uint256 price) external returns (string memory){
 
         Order storage Order = orders[orderId];
-        require(Order.owner == owner, "You are not an owner");
+        require(Order.owner == owner, "You are not the owner");
 
         Order.price = price;
 
-        return "Your Property Price Is Updated";
+        return "Your order price is up to date";
 
     }
     
-    function buyPlastic(uint256 id,  address buyer) external payable {
+    function buyPlastic(uint256 id, address buyer) external payable {
         uint256 amount = msg.value;
 
         require(amount == orders[id].price, "Insufficient funds.");
 
         Order storage Order = orders[id];
 
-        (bool sent,) = payable(Order.owner).call{value: amount}("");
+        (bool sent) = payable(Order.owner).call{value: amount}("");
 
         if(sent) {
-        order.owner = buyer;
-        emit OrderSold(id, property.owner, buyer, amount);
+            
+            order.owner = buyer;
+
+            emit OrderSold(id, Order.owner, buyer, amount);
         }
         
     }
