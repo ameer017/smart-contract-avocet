@@ -68,7 +68,7 @@ contract Plastic {
         
         require(price > 0, "Price must be greater than 0.");
         
-        require(_weight > 0, "Weight must be greater than 0.");
+        require(_weight > 10, "The least weight value should be 10.");
          
         orderIndex++;
          
