@@ -1,40 +1,41 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
 
-// NEVER record important private keys in your code - this is for demo purposes
-const SEPOLIA_TESTNET_PRIVATE_KEY =
-  "ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-const ARBITRUM_MAINNET_TEMPORARY_PRIVATE_KEY =
-  "7ab481906471300a3982c4fd072e1c786237a1cf8d392c02a124de4f481b2c12";
-
-import('hardhat/config.js').HardhatUserConfig 
-
+/** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: {
-    compilers: [
+  solidity: "0.8.24",
+  networks: {
+    alfajores: {
+      url: "https://alfajores-forno.celo-testnet.org",
+      accounts: [process.env.PRIVATE_KEY],
+    },
+    celo: {
+      url: "https://forno.celo.org",
+      accounts: [process.env.PRIVATE_KEY],
+    },
+  },
+  etherscan: {
+    apiKey: {
+      alfajores: process.env.CELOSCAN_API_KEY,
+      celo: process.env.CELOSCAN_API_KEY,
+    },
+    customChains: [
       {
-        version: "0.8.24",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
+        network: "alfajores",
+        chainId: 44787,
+        urls: {
+          apiURL: "https://api-alfajores.celoscan.io/api",
+          browserURL: "https://alfajores.celoscan.io",
+        },
+      },
+      {
+        network: "celo",
+        chainId: 42220,
+        urls: {
+          apiURL: "https://api.celoscan.io/api",
+          browserURL: "https://celoscan.io/",
         },
       },
     ],
-  },
-  networks: {
-    hardhat: {
-      chainId: 1337,
-      port: 8545,
-    },
-    arbitrumSepolia: {
-      url: "https://sepolia-rollup.arbitrum.io/rpc",
-      chainId: 421614,
-      accounts: [SEPOLIA_TESTNET_PRIVATE_KEY],
-    },
-    arbitrumOne: {
-      url: "https://arb1.arbitrum.io/rpc",
-      accounts: [ARBITRUM_MAINNET_TEMPORARY_PRIVATE_KEY],
-    },
   },
 };
