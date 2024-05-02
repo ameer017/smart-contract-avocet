@@ -31,7 +31,7 @@ interface ERC20Interface {
     event Approval(address indexed owner, address indexed spender, uint value);
 }
 
-contract AvocoinToken is ERC20Interface {
+contract Avocoin is ERC20Interface {
     string public symbol;
     string public name;
     uint8 public decimals;
@@ -42,13 +42,13 @@ contract AvocoinToken is ERC20Interface {
 
     constructor() {
         symbol = "AVC";
-        name = "AVOCOIN";
+        name = "Avocoin";
         decimals = 18;
-        _totalSupply = 1_000_000_900_000_000_000_000_000_000;
-        balances[0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266] = _totalSupply;
+        _totalSupply = 1_000_900_000_000_000_000_000_000;
+        balances[0xc7Df83388E55ee0c2972e4765BD31FC76170A66E] = _totalSupply;
         emit Transfer(
             address(0),
-            0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266,
+            0xc7Df83388E55ee0c2972e4765BD31FC76170A66E,
             _totalSupply
         );
     }
