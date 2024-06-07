@@ -9,17 +9,19 @@ import "./Counters.sol"; //custom counter contract
 contract Earthfi is ERC721URIStorage {
     address payable owner;
 
+    string public location;
+
     using Counters for Counters.Counter;
 
     Counters.Counter private _productIds;
     Counters.Counter private _productSold;
 
-    uint256 listPrice = 0.01 CELO;
+    uint256 listPrice = 0.01 ether;
 
-    constructor() ERC721("Earthfi", "ETF") {
+    constructor(string memory initialLocation) ERC721("Earthfi", "ETF") {
         owner = payable(msg.sender);
+        location = initialLocation;
     }
-
 
     struct ListedProducts {
         uint256 productId;
@@ -30,23 +32,29 @@ contract Earthfi is ERC721URIStorage {
         bool currentlyListed;
     }
 
-    mapping (uint256 =>  ListedProducts) private idToListedProduct;
+    mapping(uint256 => ListedProducts) private idToListedProduct;
 
     function updateListPrice(uint256 _listPrice) public payable {
-        require(owner == msg.sender, "Only owner can update the listing price")
-        listPrice = _listPrice
+        require(owner == msg.sender, "Only owner can update the listing price");
+        listPrice = _listPrice;
     }
 
     function getListprice() public view returns (uint256) {
         return listPrice;
     }
 
-    function getLatestIdToListedToken() public view returns (ListedProducts memory) {
+    function getLatestIdToListedToken()
+        public
+        view
+        returns (ListedProducts memory)
+    {
         uint256 currentProductId = _productIds.current();
-        return idToListedProduct[productId]
+        return idToListedProduct[currentProductId];
     }
 
-    function getListedForProductId(uint256 productId) public view returns (ListedProducts memory) {
+    function getListedForProductId(
+        uint256 productId
+    ) public view returns (ListedProducts memory) {
         return idToListedProduct[productId];
     }
 
@@ -54,27 +62,37 @@ contract Earthfi is ERC721URIStorage {
         return _productIds.current();
     }
 
-    function createProduct(string memory productURI, uint256 price) public payable returns (uint) {
+    function createProduct(
+        string memory tokenURI,
+        uint256 price
+    ) public payable returns (uint) {
         require(msg.value == listPrice, "Send enough ether to list");
         require(price > 0, "make sure the price isn't negative");
 
         _productIds.increment();
-        const currentProductId = _productIds.current();
+        uint256 currentProductId = _productIds.current();
         _safeMint(msg.sender, currentProductId);
 
-        _setProductURI(currentProductId, productURI);
+        _setTokenURI(currentProductId, tokenURI);
 
-        createListedProduct(currentProductId, price);
+        createListedProduct(currentProductId, location, price);
 
         return currentProductId;
     }
 
-    function createListedProduct() {}
-
-    function getAllProducts() {}
-
-    function getMyProduct() {}
-
-    function executeSale() {}
-
+    function createListedProduct(
+        uint256 productId,
+        string memory location,
+        uint256 price
+    ) private {
+        idToListedProduct[productId] = ListedProducts(
+            productId,
+            payable(address(this)),
+            payable(msg.sender),
+            location,
+            price,
+            true
+        );
+        _transfer(msg.sender, address(this), productId);
+    }
 }
